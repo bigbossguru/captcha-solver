@@ -7,20 +7,27 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-from geetest_slider_solver.identifier import GeeTestIdentifier
-from geetest_slider_solver.utils import CAPTCHA_REGEX_URL_PATTERN, move_slider_smoothly
+from captcha_solver.geetest._identifier import GeeTestIdentifier
+from captcha_solver.geetest._slider import move_slider_smoothly
 
 
-def captcha_solver(driver: Chrome | Firefox, **kwargs) -> None:
+CAPTCHA_REGEX_URL_PATTERN = r'url\("(.+?)"\)'
+
+
+def slider_solver(driver: Chrome | Firefox, **kwargs) -> None:
+    X_OFFSET = 40
     geetest_elements_mapping = {
         "background": "div.geetest_bg",
-        "slice": "div.geetest_slice_bg",
+        "puzzle": "div.geetest_slice_bg",
     }
-    geetest_elemets_urls = {"background_url": "", "slice_url": ""}
+    geetest_elemets_urls = {"background_url": "", "puzzle_url": ""}
 
-    driver.set_page_load_timeout(10)  # Set a longer page load timeout
-    driver.set_script_timeout(10)  # Set a longer script timeout
-    while True:
+    driver.set_page_load_timeout(10)
+    driver.set_script_timeout(10)
+
+    tries = 5
+    count = 0
+    while tries < count:
         element = WebDriverWait(driver, 20).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "div.geetest_btn"))
         )
@@ -29,6 +36,7 @@ def captcha_solver(driver: Chrome | Firefox, **kwargs) -> None:
             break
         else:
             time.sleep(1.0)
+            count += 1
             continue
 
     for key, value in geetest_elements_mapping.items():
@@ -38,8 +46,10 @@ def captcha_solver(driver: Chrome | Firefox, **kwargs) -> None:
         if url:
             geetest_elemets_urls[f"{key}_url"] = url.group(1)
 
-    res = GeeTestIdentifier.test(**geetest_elemets_urls)
+    geetest_identifier = GeeTestIdentifier(**geetest_elemets_urls)
+    res = geetest_identifier.find_puzzle_position()
+
     slider_button = driver.find_element(By.CSS_SELECTOR, "div.geetest_btn")
     move_slider_smoothly(
-        driver, slider_button, res["position_from_left"] - 40, **kwargs
+        driver, slider_button, res["position_from_left"] - X_OFFSET, **kwargs
     )

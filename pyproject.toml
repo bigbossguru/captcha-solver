@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "geetest-slider-solver"
-version = "0.1.0"
+name = "captcha-solver"
+version = "0.2.0"
 description = ""
 authors = ["Eldar MSI <kursus1010@gmail.com>"]
 readme = "README.md"
-packages = [{include = "geetest_slider_solver", from = "src"}]
+packages = [{include = "captcha_solver", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
