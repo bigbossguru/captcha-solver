@@ -8,11 +8,11 @@ packages = [{include = "captcha_solver", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-webdriver-wrappers = {git = "https://github.com/bigbossguru/webdriver-wrappers.git"}
 numpy = "^2.1.3"
 pillow = "^11.0.0"
 opencv-python = "^4.10.0.84"
 requests = "^2.32.3"
+selenium = "^4.26.1"
 
 
 [build-system]
