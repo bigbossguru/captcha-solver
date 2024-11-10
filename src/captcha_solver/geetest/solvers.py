@@ -17,8 +17,8 @@ CAPTCHA_REGEX_URL_PATTERN = r'url\("(.+?)"\)'
 def slider_solver(driver: Chrome | Firefox, **kwargs) -> None:
     X_OFFSET = 40
     geetest_elements_mapping = {
-        "background": "div.geetest_bg",
-        "puzzle": "div.geetest_slice_bg",
+        "background": "//div[contains(@class, 'geetest_bg')]",
+        "puzzle": "//div[contains(@class, 'geetest_slice_bg')]",
     }
     geetest_elemets_urls = {"background_url": "", "puzzle_url": ""}
 
@@ -29,7 +29,7 @@ def slider_solver(driver: Chrome | Firefox, **kwargs) -> None:
     count = 0
     while tries < count:
         element = WebDriverWait(driver, 20).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "div.geetest_btn"))
+            EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'geetest_btn')]"))
         )
         if element.is_displayed():
             time.sleep(1.0)
@@ -40,7 +40,7 @@ def slider_solver(driver: Chrome | Firefox, **kwargs) -> None:
             continue
 
     for key, value in geetest_elements_mapping.items():
-        element = driver.find_element(By.CSS_SELECTOR, value)
+        element = driver.find_element(By.XPATH, value)
         style_attribute = element.get_attribute("style")
         url = re.search(CAPTCHA_REGEX_URL_PATTERN, style_attribute)
         if url:
@@ -49,7 +49,7 @@ def slider_solver(driver: Chrome | Firefox, **kwargs) -> None:
     geetest_identifier = GeeTestIdentifier(**geetest_elemets_urls)
     res = geetest_identifier.find_puzzle_position()
 
-    slider_button = driver.find_element(By.CSS_SELECTOR, "div.geetest_btn")
+    slider_button = driver.find_element(By.XPATH, "//div[contains(@class, 'geetest_btn')]")
     move_slider_smoothly(
         driver, slider_button, res["position_from_left"] - X_OFFSET, **kwargs
     )
