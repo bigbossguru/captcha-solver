@@ -6,7 +6,12 @@ from captcha_solver.geetest._identifier import GeeTestIdentifier
 CAPTCHA_REGEX_URL_PATTERN = r'url\("(.+?)"\)'
 
 
-def slider_solver(html_content: str = None, background_url: str = None, puzzle_url: str = None, x_offset=40) -> tuple[int, dict]:
+def slider_solver(
+    html_content: str = None,
+    background_url: str = None,
+    puzzle_url: str = None,
+    x_offset: int = 0,
+) -> tuple[int, dict]:
     """For Linux os install additional packges: python-lxml python3-opencv python3-dev"""
 
     geetest_elemets_urls = {"background_url": background_url, "puzzle_url": puzzle_url}
